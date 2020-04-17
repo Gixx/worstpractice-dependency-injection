@@ -1,2 +1,5 @@
-# worstpractice-dependency-injection
-Worst practice: DIY depencency injection container
+# The worstpractice.dev presents
+
+## DIY Dependency Injection
+
+

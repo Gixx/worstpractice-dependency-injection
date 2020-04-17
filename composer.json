@@ -1,0 +1,69 @@
+{
+  "name": "gixx/worstpractice-dependency-injection",
+  "type": "library",
+  "version": "1.0.0",
+  "description": "A simple dependency injection container",
+  "homepage": "http://www.worstpractice.dev",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Gabor Ivan",
+      "email": "worst.practice.blog@gmail.com",
+      "homepage": "http://www.worstpractice.dev",
+      "role": "Developer"
+    }
+  ],
+  "config": {
+    "sort-packages": true,
+    "platform": {
+      "php": "7.4"
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "WorstPractice\\": "./src/WorstPractice"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "WorstPracticeTest\\": "./tests/WorstPracticeTest"
+    }
+  },
+  "require": {
+    "php": ">=7.4",
+    "psr/container": "1.0.0"
+  },
+  "require-dev": {
+    "erusev/parsedown": "1.7.4",
+    "friendsofphp/php-cs-fixer": "2.16.1",
+    "pdepend/pdepend": "2.7.1",
+    "phpmd/phpmd": "2.8.2",
+    "phpstan/phpstan": "0.12.18",
+    "phpunit/phpunit": "9.1.1",
+    "roave/security-advisories": "dev-master",
+    "squizlabs/php_codesniffer": "3.5.4",
+    "symplify/changelog-linker": "7.2.8",
+    "symplify/easy-coding-standard": "7.2.8",
+    "symplify/monorepo-builder": "7.2.8",
+    "symplify/phpstan-extensions": "7.2.8",
+    "thecodingmachine/phpstan-strict-rules": "0.12.0"
+  },
+  "scripts-descriptions": {
+    "check": "Run all tests!"
+  },
+  "scripts": {
+    "check": [
+      "@md",
+      "@cs-fixer",
+      "@cs",
+      "@unit",
+      "@phpstan"
+    ],
+    "md": "vendor/bin/phpmd src/ text phpmd.xml",
+    "cs-fixer": "vendor/bin/php-cs-fixer fix src/",
+    "cs": "vendor/bin/phpcs --standard=PSR12 src/",
+    "unit": "vendor/bin/phpunit -c phpunit.xml",
+    "phpstan": "vendor/bin/phpstan analyse src --level=7"
+  }
+}
