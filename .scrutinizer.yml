@@ -42,8 +42,13 @@ build:
       tests:
         override:
           - php-scrutinizer-run --enable-security-analysis
+          - composer run lint
+          - composer run md
+          - composer run cs-fixer
+          - composer run cs
+          - composer run phpstan
           -
-            command: 'composer run check'
+            command: composer run unit
             coverage:
               file: 'build/clover.xml'
               format: 'clover'
