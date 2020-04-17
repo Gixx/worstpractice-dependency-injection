@@ -35,7 +35,7 @@ before_commands:
 
 build:
   nodes:
-    php72:
+    php74:
       environment:
         php: '7.4'
 
