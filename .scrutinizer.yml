@@ -45,7 +45,7 @@ build:
           -
             command: 'vendor/bin/phpunit -c phpunit.xml'
             coverage:
-              file: 'build/logs/clover.xml'
+              file: 'build/clover.xml'
               format: 'clover'
 
 tools:

@@ -104,8 +104,8 @@ class Container implements ContainerInterface
     public function has($identifier): bool
     {
         return isset($this->serviceContainer[$identifier])
-            || isset($this->serviceLibrary[$identifier])
-            || class_exists($identifier);
+            || $this->isServiceRegisteredIntoLibrary($identifier)
+            || $this->isServiceRegistrableIntoLibrary($identifier);
     }
 
     /**
@@ -117,21 +117,10 @@ class Container implements ContainerInterface
      */
     public function get($identifier): object
     {
-        // Not registered in the library but it's a valid class name, or it's in the raw configuration: register.
-        if (
-            !isset($this->serviceLibrary[$identifier])
-            && (class_exists($identifier) || isset($this->configuration[$identifier]))
-        ) {
-            $this->registerServiceToLibrary($identifier);
-        }
-
-        // Registered in the library but not in the container, so register it there too.
-        if (isset($this->serviceLibrary[$identifier]) && !isset($this->serviceContainer[$identifier])) {
-            $this->registerServiceToContainer($identifier);
-        }
+        $this->onBeforeGet($identifier);
 
         // If still not exists, then kill it.
-        if (!isset($this->serviceLibrary[$identifier])) {
+        if (!$this->isServiceRegisteredIntoLibrary($identifier)) {
             throw new OutOfBoundsException(
                 sprintf('The given service (%s) is not defined service or class name.', $identifier),
                 1000
@@ -141,6 +130,30 @@ class Container implements ContainerInterface
         return $this->serviceLibrary[$identifier][self::SERVICE_SHARE]
             ? $this->serviceContainer[$identifier]
             : clone $this->serviceContainer[$identifier];
+    }
+
+    /**
+     * Before getting a service, check if it is ready and registered into the container.
+     *
+     * @param string $identifier
+     */
+    private function onBeforeGet(string $identifier): void
+    {
+        // Not registered in the library but it's a valid class name, or it's in the raw configuration: register.
+        if (
+            !$this->isServiceRegisteredIntoLibrary($identifier)
+            && $this->isServiceRegistrableIntoLibrary($identifier)
+        ) {
+            $this->registerServiceToLibrary($identifier);
+        }
+
+        // Registered in the library but not in the container, so register it there too.
+        if (
+            $this->isServiceRegisteredIntoLibrary($identifier)
+            && !$this->isServiceRegisteredIntoContainer($identifier)
+        ) {
+            $this->registerServiceToContainer($identifier);
+        }
     }
 
     /**
@@ -186,6 +199,39 @@ class Container implements ContainerInterface
     }
 
     /**
+     * Checks if the service name is a valid class, or it's in the raw configuration.
+     *
+     * @param string $identifier
+     * @return bool
+     */
+    private function isServiceRegistrableIntoLibrary(string $identifier): bool
+    {
+        return (class_exists($identifier) || isset($this->configuration[$identifier]);
+    }
+
+    /**
+     * Checks if the service has been already registered into the library
+     *
+     * @param string $identifier
+     * @return bool
+     */
+    private function isServiceRegisteredIntoLibrary(string $identifier): bool
+    {
+        return isset($this->serviceLibrary[$identifier]);
+    }
+
+    /**
+     * Checks if the service has been already registered into the container
+     *
+     * @param string $identifier
+     * @return bool
+     */
+    private function isServiceRegisteredIntoContainer(string $identifier): bool
+    {
+        return isset($this->serviceContainer[$identifier]);
+    }
+
+    /**
      * Checks if the service has been already initialized.
      *
      * @param  string $identifier
@@ -193,8 +239,7 @@ class Container implements ContainerInterface
      */
     private function isServiceInitialized(string $identifier): bool
     {
-        return isset($this->serviceLibrary[$identifier])
-            && $this->serviceLibrary[$identifier][self::SERVICE_INITIALIZED];
+        return $this->serviceLibrary[$identifier][self::SERVICE_INITIALIZED] ?? false;
     }
 
     /**
