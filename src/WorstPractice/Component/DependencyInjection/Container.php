@@ -206,7 +206,7 @@ class Container implements ContainerInterface
      */
     private function isServiceRegistrableIntoLibrary(string $identifier): bool
     {
-        return (class_exists($identifier) || isset($this->configuration[$identifier]);
+        return class_exists($identifier) || isset($this->configuration[$identifier]);
     }
 
     /**

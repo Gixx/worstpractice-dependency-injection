@@ -54,12 +54,14 @@
   },
   "scripts": {
     "check": [
+      "@lint",
       "@md",
       "@cs-fixer",
       "@cs",
       "@unit",
       "@phpstan"
     ],
+    "lint": "find src/ -type f -name \"*.php\" | xargs -n1 php -l 2>/dev/null",
     "md": "vendor/bin/phpmd src/ text phpmd.xml",
     "cs-fixer": "vendor/bin/php-cs-fixer fix src/",
     "cs": "vendor/bin/phpcs --standard=PSR12 src/",
