@@ -165,7 +165,7 @@ class Container implements ContainerInterface
      * @throws RuntimeException
      * @throws InvalidArgumentException
      */
-    public function set(string $identifier, object $serviceInstance, bool $isShared = false): void
+    public function set(string $identifier, object $serviceInstance, bool $isShared = true): void
     {
         // Check if the service is initialized already.
         if ($this->isServiceInitialized($identifier)) {

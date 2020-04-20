@@ -76,8 +76,6 @@ class ContainerTest extends TestCase
 
         $container = new Container($config);
 
-        $nonExistingClass = '\\Namespace\\To\\Non\\Existing\\Class\\A' . md5('something');
-
         $this->assertTrue($container->has('ServiceAlias'));
         $this->expectException(\RuntimeException::class);
         $container->get('ServiceAlias');
@@ -186,7 +184,7 @@ class ContainerTest extends TestCase
         $dateTimeString = '2000-01-01 01:01:01';
         $date1 = new DateTime($dateTimeString);
 
-        $container->set('DateService', $date1);
+        $container->set('DateService', $date1, false);
         $date2 = $container->get('DateService');
 
         $this->assertSame($date1->format('Y-m-d H:i:s'), $date2->format('Y-m-d H:i:s'));
