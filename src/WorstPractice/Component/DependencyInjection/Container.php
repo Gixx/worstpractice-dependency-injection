@@ -175,8 +175,6 @@ class Container implements ContainerInterface
             );
         }
 
-        $instanceType = gettype($serviceInstance);
-
         // Register service.
         $this->serviceContainer[$identifier] = $serviceInstance;
 
