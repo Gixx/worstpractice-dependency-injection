@@ -19,6 +19,8 @@ use WorstPractice\Component\DependencyInjection\Container;
 use WorstPractice\Component\DependencyInjection\ContainerInterface;
 use DateTime;
 use DateTimeZone;
+use OutOfBoundsException;
+use RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -59,7 +61,7 @@ class ContainerTest extends TestCase
         $nonExistingClass = '\\Namespace\\To\\Non\\Existing\\Class\\A' . md5('something');
 
         $this->assertFalse($container->has($nonExistingClass));
-        $this->expectException(\OutOfBoundsException::class);
+        $this->expectException(OutOfBoundsException::class);
         $container->get($nonExistingClass);
     }
 
@@ -77,7 +79,7 @@ class ContainerTest extends TestCase
         $container = new Container($config);
 
         $this->assertTrue($container->has('ServiceAlias'));
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $container->get('ServiceAlias');
     }
 
@@ -181,8 +183,7 @@ class ContainerTest extends TestCase
 
         $this->assertTrue($container->has('DateService'));
 
-        $dateTimeString = '2000-01-01 01:01:01';
-        $date1 = new DateTime($dateTimeString);
+        $date1 = new DateTime('2000-01-01 01:01:01');
 
         $container->set('DateService', $date1, false);
         $date2 = $container->get('DateService');
@@ -214,7 +215,7 @@ class ContainerTest extends TestCase
 
         $this->assertNotSame($date1->format('Y-m-d H:i:s'), $date2->format('Y-m-d H:i:s'));
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $container->set('DateService', $date2);
     }
 
@@ -318,7 +319,7 @@ class ContainerTest extends TestCase
 
         $container = new Container($config);
 
-        $this->expectException(\RuntimeException::class);
-        $date = $container->get('DateService');
+        $this->expectException(RuntimeException::class);
+        $container->get('DateService');
     }
 }

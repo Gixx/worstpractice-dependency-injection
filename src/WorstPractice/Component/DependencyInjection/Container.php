@@ -15,7 +15,6 @@ declare(strict_types=1);
 
 namespace WorstPractice\Component\DependencyInjection;
 
-use InvalidArgumentException;
 use OutOfBoundsException;
 use RuntimeException;
 
@@ -163,7 +162,6 @@ class Container implements ContainerInterface
      * @param  object $serviceInstance
      * @param  bool   $isShared
      * @throws RuntimeException
-     * @throws InvalidArgumentException
      */
     public function set(string $identifier, object $serviceInstance, bool $isShared = true): void
     {
