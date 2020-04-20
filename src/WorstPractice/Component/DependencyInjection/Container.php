@@ -177,14 +177,6 @@ class Container implements ContainerInterface
 
         $instanceType = gettype($serviceInstance);
 
-        // Register synthetic services
-        if ('object' !== $instanceType) {
-            throw new InvalidArgumentException(
-                sprintf('The second parameter must be an object instance, %s given.', $instanceType),
-                1002
-            );
-        }
-
         // Register service.
         $this->serviceContainer[$identifier] = $serviceInstance;
 
@@ -325,7 +317,7 @@ class Container implements ContainerInterface
         if (!class_exists($className)) {
             throw new RuntimeException(
                 sprintf('The resolved class "%s" cannot be found.', $className),
-                1003
+                1002
             );
         }
 
@@ -354,7 +346,7 @@ class Container implements ContainerInterface
             if (!method_exists($serviceInstance, $method)) {
                 throw new RuntimeException(
                     sprintf('The method "%s::%s" does not exist or not public.', $className, $method),
-                    1004
+                    1003
                 );
             }
 
@@ -377,15 +369,17 @@ class Container implements ContainerInterface
      */
     private function setArgumentListReferences(array $argumentList): array
     {
-        foreach ($argumentList as $key => &$value) {
+        $resolvedArgumentList = [];
+
+        foreach ($argumentList as $key => $value) {
             // Associative array keys marks literal values
-            if (!is_numeric($key)) {
-                continue;
+            if (is_numeric($key)) {
+                $value = $this->get($value);
             }
 
-            $value = $this->get($value);
+            $resolvedArgumentList[] = $value;
         }
 
-        return $argumentList;
+        return $resolvedArgumentList;
     }
 }
