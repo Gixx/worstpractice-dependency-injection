@@ -9,7 +9,7 @@
 [![Packagist Package](https://flat.badgen.net/packagist/name/gixx/worstpractice-dependency-injection)](https://packagist.org/packages/gixx/worstpractice-dependency-injection)
 [![Packagist Downloads](https://flat.badgen.net/packagist/dt/gixx/worstpractice-dependency-injection)](https://packagist.org/packages/gixx/worstpractice-dependency-injection)
 
-The complete source code for the series of articles [https://worstpractice.dev/backend/diy-dependency-injection-container/](DIY Dependency Injection Container) part 1, 2 and 3.
+The complete source code for the series of articles https://worstpractice.dev/backend/diy-dependency-injection-container/
 
 ### Purpose
 
