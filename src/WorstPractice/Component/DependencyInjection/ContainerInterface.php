@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace WorstPractice\Component\DependencyInjection;
 
 use Psr\Container\ContainerInterface as PsrContainerInterface;
+use RuntimeException;
 
 /**
  * Interface ContainerInterface
@@ -29,6 +30,7 @@ interface ContainerInterface extends PsrContainerInterface
      * @param string $identifier
      * @param object $serviceInstance
      * @param bool   $isShared
+     * @throws RuntimeException
      */
     public function set(string $identifier, object $serviceInstance, bool $isShared = true): void;
 }
