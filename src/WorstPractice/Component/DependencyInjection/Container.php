@@ -277,25 +277,35 @@ class Container implements ContainerInterface
      *
      * @param array  $configuration
      * @param string $identifier
+     * @throws RuntimeException
      */
     private function resolveInheritance(array &$configuration, string $identifier): void
     {
-        if (isset($configuration[self::SERVICE_INHERIT])) {
-            $parentConfiguration = $this->getServiceConfiguration($configuration[self::SERVICE_INHERIT]);
-
-            foreach ($configuration as $key => $value) {
-                $parentConfiguration[$key] = $value;
-            }
-
-            // If the class name is not explicitly defined but the identifier is a valid class name,
-            // the inherited class name should be overwritten.
-            if (!isset($configuration[self::SERVICE_CLASS]) && class_exists($identifier)) {
-                $parentConfiguration[self::SERVICE_CLASS] = $identifier;
-            }
-
-            $configuration = $parentConfiguration;
-            unset($parentConfiguration, $configuration[self::SERVICE_INHERIT]);
+        if (!isset($configuration[self::SERVICE_INHERIT])) {
+            return;
         }
+
+        if ($configuration[self::SERVICE_INHERIT] === $identifier) {
+            throw new RuntimeException(
+                'Self referencing is not allowed.',
+                1002
+            );
+        }
+
+        $parentConfiguration = $this->getServiceConfiguration($configuration[self::SERVICE_INHERIT]);
+
+        foreach ($configuration as $key => $value) {
+            $parentConfiguration[$key] = $value;
+        }
+
+        // If the class name is not explicitly defined but the identifier is a valid class name,
+        // the inherited class name should be overwritten.
+        if (!isset($configuration[self::SERVICE_CLASS]) && class_exists($identifier)) {
+            $parentConfiguration[self::SERVICE_CLASS] = $identifier;
+        }
+
+        $configuration = $parentConfiguration;
+        unset($parentConfiguration, $configuration[self::SERVICE_INHERIT]);
     }
 
     /**
@@ -313,7 +323,7 @@ class Container implements ContainerInterface
         if (!class_exists($className)) {
             throw new RuntimeException(
                 sprintf('The resolved class "%s" cannot be found.', $className),
-                1002
+                1003
             );
         }
 
@@ -342,7 +352,7 @@ class Container implements ContainerInterface
             if (!method_exists($serviceInstance, $method)) {
                 throw new RuntimeException(
                     sprintf('The method "%s::%s" does not exist or not public.', $className, $method),
-                    1003
+                    1004
                 );
             }
 
