@@ -264,11 +264,29 @@ class ContainerTest extends TestCase
     /**
      * Test if container handles config inheritance with overwrite possibility.
      */
-    public function testContainerInheritanceError(): void
+    public function testContainerInheritanceSelfReferenceError(): void
     {
         $config = [
             'NotSharedDateService' => [
                 'inherits' => 'NotSharedDateService',
+                'shared' => false
+            ],
+        ];
+
+        $container = new Container($config);
+
+        $this->expectException(RuntimeException::class);
+        $container->get('NotSharedDateService');
+    }
+
+    /**
+     * Test if container handles config inheritance with overwrite possibility.
+     */
+    public function testContainerInheritanceFalseReferenceError(): void
+    {
+        $config = [
+            'NotSharedDateService' => [
+                'inherits' => 'NotExistingService',
                 'shared' => false
             ],
         ];
