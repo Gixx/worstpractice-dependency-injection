@@ -63,6 +63,7 @@ class ContainerTest extends TestCase
 
         $this->assertFalse($container->has($nonExistingClass));
         $this->expectException(OutOfBoundsException::class);
+        $this->expectExceptionCode(1001);
         $container->get($nonExistingClass);
     }
 
@@ -365,31 +366,29 @@ class ContainerTest extends TestCase
      */
     public function testContainerFailingWithReferenceLoop(): void
     {
-        $dateTimeString = '1980-02-19 12:15:00';
-
         $config = [
             'a-service' => [
                 'class' => Fixtures\ClassA::class,
                 'arguments' => [
-                    Fixtures\ClassB::class
+                    'b-service'
                 ],
             ],
             'b-service' => [
                 'class' => Fixtures\ClassB::class,
                 'arguments' => [
-                    Fixtures\ClassC::class
+                    'c-service'
                 ],
             ],
             'c-service' => [
                 'class' => Fixtures\ClassC::class,
                 'arguments' => [
-                    Fixtures\ClassD::class
+                    'd-service'
                 ],
             ],
             'd-service' => [
                 'class' => Fixtures\ClassD::class,
                 'arguments' => [
-                    Fixtures\ClassA::class
+                    'a-service'
                 ],
             ],
         ];
@@ -397,6 +396,7 @@ class ContainerTest extends TestCase
         $container = new Container($config);
 
         $this->expectException(RuntimeException::class);
-        $container->get('DateService');
+        $this->expectExceptionCode(1000);
+        $container->get('a-service');
     }
 }
