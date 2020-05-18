@@ -22,6 +22,7 @@ use DateTimeZone;
 use OutOfBoundsException;
 use RuntimeException;
 use PHPUnit\Framework\TestCase;
+use WorstPracticeTest\Fixtures;
 
 /**
  * Class ContainerTest
@@ -336,7 +337,7 @@ class ContainerTest extends TestCase
     /**
      * Test container fails instantiate a class when the class config contains invalid method reference.
      */
-    public function testContainerFailingConfigCalls1(): void
+    public function testContainerFailingWithInvalidMethodReference(): void
     {
         $dateTimeString = '1980-02-19 12:15:00';
 
@@ -350,6 +351,46 @@ class ContainerTest extends TestCase
                     ['setDatum', ['year' => 2000, 'month' => 3, 'day' => 24]],
                 ],
                 'shared' => true
+            ],
+        ];
+
+        $container = new Container($config);
+
+        $this->expectException(RuntimeException::class);
+        $container->get('DateService');
+    }
+
+    /**
+     * Test container fails instantiate a class when the class config contains invalid method reference.
+     */
+    public function testContainerFailingWithReferenceLoop(): void
+    {
+        $dateTimeString = '1980-02-19 12:15:00';
+
+        $config = [
+            'a-service' => [
+                'class' => Fixtures\ClassA::class,
+                'arguments' => [
+                    Fixtures\ClassB::class
+                ],
+            ],
+            'b-service' => [
+                'class' => Fixtures\ClassB::class,
+                'arguments' => [
+                    Fixtures\ClassC::class
+                ],
+            ],
+            'c-service' => [
+                'class' => Fixtures\ClassC::class,
+                'arguments' => [
+                    Fixtures\ClassD::class
+                ],
+            ],
+            'd-service' => [
+                'class' => Fixtures\ClassD::class,
+                'arguments' => [
+                    Fixtures\ClassA::class
+                ],
             ],
         ];
 
