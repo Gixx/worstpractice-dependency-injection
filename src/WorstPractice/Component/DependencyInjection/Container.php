@@ -106,7 +106,7 @@ class Container implements ContainerInterface
      */
     public function has($identifier): bool
     {
-        return isset($this->serviceContainer[$identifier])
+        return $this->isServiceRegisteredIntoContainer($identifier)
             || $this->isServiceRegisteredIntoLibrary($identifier)
             || $this->isServiceRegistrableIntoLibrary($identifier);
     }
