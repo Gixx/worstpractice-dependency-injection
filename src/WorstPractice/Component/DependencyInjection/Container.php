@@ -151,7 +151,7 @@ class Container implements ContainerInterface
         }
 
         // In this point we always have the same element in the last position we added 10 lines earlier.
-        $check = array_pop($this->loopDetector);
+        array_pop($this->loopDetector);
 
         return $this->serviceLibrary[$identifier][self::SERVICE_SHARE]
             ? $this->serviceContainer[$identifier]
