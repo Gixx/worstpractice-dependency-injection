@@ -155,7 +155,9 @@ class Container implements ContainerInterface
 
         // But if it's not...
         if ($check !== $identifier) {
+            // @codeCoverageIgnoreStart - this is only a theoretical case
             throw new RuntimeException('Memory leak detected!', 1002);
+            // @codeCoverageIgnoreEnd
         }
 
         return $this->serviceLibrary[$identifier][self::SERVICE_SHARE]
