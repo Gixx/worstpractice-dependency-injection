@@ -399,4 +399,43 @@ class ContainerTest extends TestCase
         $this->expectExceptionCode(1000);
         $container->get('a-service');
     }
+
+    /**
+     * Test container gets the service when two separated reference has the same third reference.
+     */
+    public function testContainerAllowsReferenceNodes(): void
+    {
+        $config = [
+            'a-date-service' => [
+                'class' => \DateTime::class,
+                'arguments' => [
+                    'dateTimeString' => '1980-02-19 12:15:00',
+                ]
+            ],
+            'x-service' => [
+                'class' => Fixtures\ClassX::class,
+                'arguments' => [
+                    'y-service',
+                    'z-service',
+                ],
+            ],
+            'y-service' => [
+                'class' => Fixtures\ClassY::class,
+                'arguments' => [
+                    'a-date-service'
+                ],
+            ],
+            'z-service' => [
+                'class' => Fixtures\ClassZ::class,
+                'arguments' => [
+                    'a-date-service'
+                ],
+            ],
+        ];
+
+        $container = new Container($config);
+        $actualService = $container->get('x-service');
+
+        $this->assertInstanceOf(Fixtures\ClassX::class, $actualService);
+    }
 }

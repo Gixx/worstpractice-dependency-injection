@@ -150,6 +150,14 @@ class Container implements ContainerInterface
             );
         }
 
+        // In this point we always have the same element in the last position we added 10 lines earlier.
+        $check = array_pop($this->loopDetector);
+
+        // But if it's not...
+        if ($check !== $identifier) {
+            throw new RuntimeException('Memory leak detected!', 1002);
+        }
+
         return $this->serviceLibrary[$identifier][self::SERVICE_SHARE]
             ? $this->serviceContainer[$identifier]
             : clone $this->serviceContainer[$identifier];
@@ -193,7 +201,7 @@ class Container implements ContainerInterface
         if ($this->isServiceInitialized($identifier)) {
             throw new RuntimeException(
                 sprintf('Another service with this identifier (%s) is already initialized.', $identifier),
-                1002
+                1003
             );
         }
 
@@ -312,7 +320,7 @@ class Container implements ContainerInterface
         if ($configuration[self::SERVICE_INHERIT] === $identifier) {
             throw new RuntimeException(
                 'Self referencing is not allowed.',
-                1003
+                1004
             );
         }
 
@@ -347,7 +355,7 @@ class Container implements ContainerInterface
         if (!class_exists($className)) {
             throw new RuntimeException(
                 sprintf('The resolved class "%s" cannot be found.', $className),
-                1004
+                1005
             );
         }
 
@@ -376,7 +384,7 @@ class Container implements ContainerInterface
             if (!method_exists($serviceInstance, $method)) {
                 throw new RuntimeException(
                     sprintf('The method "%s::%s" does not exist or not public.', $className, $method),
-                    1005
+                    1006
                 );
             }
 
