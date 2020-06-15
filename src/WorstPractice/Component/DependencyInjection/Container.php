@@ -153,13 +153,6 @@ class Container implements ContainerInterface
         // In this point we always have the same element in the last position we added 10 lines earlier.
         $check = array_pop($this->loopDetector);
 
-        // But if it's not...
-        if ($check !== $identifier) {
-            // @codeCoverageIgnoreStart - this is only a theoretical case
-            throw new RuntimeException('Memory leak detected!', 1002);
-            // @codeCoverageIgnoreEnd
-        }
-
         return $this->serviceLibrary[$identifier][self::SERVICE_SHARE]
             ? $this->serviceContainer[$identifier]
             : clone $this->serviceContainer[$identifier];
