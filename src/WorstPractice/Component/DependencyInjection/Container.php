@@ -323,7 +323,36 @@ class Container implements ContainerInterface
             return;
         }
 
-        if ($configuration[self::SERVICE_INHERIT] === $identifier) {
+        $this->checkForInheritanceLoop($configuration[self::SERVICE_INHERIT], $identifier);
+
+        $this->inheritanceLoopDetector[] = $identifier;
+        $parentConfiguration = $this->getServiceConfiguration($configuration[self::SERVICE_INHERIT]);
+
+        // not needed any more
+        unset($configuration[self::SERVICE_INHERIT]);
+
+        // Overwrite the parent service's config with the current service's config
+        foreach ($configuration as $key => $value) {
+            $parentConfiguration[$key] = $value;
+        }
+
+        // If the class name is not explicitly defined but the identifier is a valid class name,
+        // the inherited class name should be overwritten.
+        if (!isset($configuration[self::SERVICE_CLASS]) && class_exists($identifier)) {
+            $parentConfiguration[self::SERVICE_CLASS] = $identifier;
+        }
+
+        $configuration = $parentConfiguration;
+    }
+
+    /**
+     * @param string $parentIdentifier
+     * @param string $identifier
+     * @throws RuntimeException
+     */
+    private function checkForInheritanceLoop(string $parentIdentifier, string $identifier): void
+    {
+        if ($parentIdentifier === $identifier) {
             throw new RuntimeException(
                 sprintf('Self referencing is not allowed: %s', $identifier),
                 1004
@@ -336,25 +365,6 @@ class Container implements ContainerInterface
                 1005
             );
         }
-
-        $this->inheritanceLoopDetector[] = $identifier;
-        $parentConfiguration = $this->getServiceConfiguration($configuration[self::SERVICE_INHERIT]);
-
-        foreach ($configuration as $key => $value) {
-            // the parent config will not have this key, since it's already resolved.
-            if ($key === self::SERVICE_INHERIT) {
-                continue;
-            }
-            $parentConfiguration[$key] = $value;
-        }
-
-        // If the class name is not explicitly defined but the identifier is a valid class name,
-        // the inherited class name should be overwritten.
-        if (!isset($configuration[self::SERVICE_CLASS]) && class_exists($identifier)) {
-            $parentConfiguration[self::SERVICE_CLASS] = $identifier;
-        }
-
-        $configuration = $parentConfiguration;
     }
 
     /**
