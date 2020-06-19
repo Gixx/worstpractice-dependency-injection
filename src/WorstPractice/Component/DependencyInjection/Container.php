@@ -358,25 +358,6 @@ class Container implements ContainerInterface
     }
 
     /**
-     * Verifies the service class name.
-     *
-     * @param  string $className
-     * @throws RuntimeException
-     * @return string
-     */
-    private function verifyServiceClassName(string $className): string
-    {
-        if (!class_exists($className)) {
-            throw new RuntimeException(
-                sprintf('The resolved class "%s" cannot be found.', $className),
-                1006
-            );
-        }
-
-        return $className;
-    }
-
-    /**
      * Registers the service into the container AKA create the instance.
      *
      * @param string $identifier
