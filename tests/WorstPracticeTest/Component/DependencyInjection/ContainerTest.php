@@ -113,7 +113,7 @@ class ContainerTest extends TestCase
     /**
      * Test if container will get a new instance of a class if it's configured to be not shared.
      */
-    public function testNotSharedInstances(): void
+    public function testContainerWithNotSharedInstances(): void
     {
         $dateTimeString = '1980-02-19 12:15:00';
 
@@ -141,7 +141,7 @@ class ContainerTest extends TestCase
     /**
      * Test if container will return with the same instance if it's configured to be shared.
      */
-    public function testSharedInstance(): void
+    public function testContainerWithSharedInstance(): void
     {
         $dateTimeString = '1980-02-19 12:15:00';
 
@@ -169,7 +169,7 @@ class ContainerTest extends TestCase
     /**
      * Test if container allows to overwrite a service on-the-fly before the first instantiation
      */
-    public function testContainerOverwriteService(): void
+    public function testContainerWithInjectedInstance(): void
     {
         $config = [
             'DateService' => [
@@ -264,7 +264,32 @@ class ContainerTest extends TestCase
     }
 
     /**
-     * Test if container handles config inheritance with overwrite possibility.
+     * Test is container handles config with mutual inheritance.
+     */
+    public function testContainerInheritanceLoopError(): void
+    {
+        $config = [
+            'SharedDateService' => [
+                'inherits' => 'IntermediateService',
+                'shared' => true
+            ],
+            'IntermediateService' => [
+                'inherits' => 'NotSharedDateService',
+            ],
+            'NotSharedDateService' => [
+                'inherits' => 'SharedDateService',
+                'shared' => false
+            ],
+        ];
+
+        $container = new Container($config);
+
+        $this->expectException(RuntimeException::class);
+        $container->get('NotSharedDateService');
+    }
+
+    /**
+     * Test if container handles config with self-inheritance.
      */
     public function testContainerInheritanceSelfReferenceError(): void
     {
@@ -282,7 +307,7 @@ class ContainerTest extends TestCase
     }
 
     /**
-     * Test if container handles config inheritance with overwrite possibility.
+     * Test if container handles config with non-existing inheritance reference.
      */
     public function testContainerInheritanceFalseReferenceError(): void
     {
@@ -362,6 +387,32 @@ class ContainerTest extends TestCase
     }
 
     /**
+     * Test case when the prepared config references to a service which will be injected later.
+     */
+    public function testContainerConfigReferencesAnInjectedService(): void
+    {
+        $config = [
+            'm-service' => [
+                'class' => Fixtures\ClassM::class,
+                'arguments' => [
+                    'n-service'
+                ],
+            ],
+        ];
+
+        $container = new Container($config);
+        $this->assertFalse($container->has('n-service'));
+
+        $date = new DateTime('2000-01-01 01:01:01');
+        $serviceN = new Fixtures\ClassN($date);
+
+        $container->set('n-service', $serviceN, true);
+
+        $actualInstance = $container->get('m-service');
+        $this->assertInstanceOf(Fixtures\ClassM::class, $actualInstance);
+    }
+
+    /**
      * Test container fails instantiate a class when the class config contains invalid method reference.
      */
     public function testContainerFailingWithReferenceLoop(): void
@@ -403,7 +454,7 @@ class ContainerTest extends TestCase
     /**
      * Test container gets the service when two separated reference has the same third reference.
      */
-    public function testContainerAllowsReferenceNodes(): void
+    public function testContainerAllowsTheSameReferenceOnDifferentNodes(): void
     {
         $config = [
             'a-date-service' => [
@@ -437,5 +488,47 @@ class ContainerTest extends TestCase
         $actualService = $container->get('x-service');
 
         $this->assertInstanceOf(Fixtures\ClassX::class, $actualService);
+    }
+
+    public function testContainerAllowsTheSameReferenceOnConfigInheritNodes(): void
+    {
+        $config = [
+            'm-service' => [
+                'class' => Fixtures\ClassM::class,
+                'arguments' => [
+                    'n-service'
+                ],
+                'shared' => false
+            ],
+            'n-service' => [
+                'class' => Fixtures\ClassN::class,
+                'arguments' => [
+                    DateTime::class
+                ],
+                'shared' => true
+            ],
+            'o-service' => [
+                'class' => Fixtures\ClassO::class,
+                'arguments' => [
+                    'xm-service',
+                    'xn-service',
+                ]
+            ],
+            'xm-service' => [
+                'inherits' => 'm-service',
+            ],
+            'xn-service' => [
+                'class' => Fixtures\ClassN::class,
+                'arguments' => [
+                    DateTime::class
+                ],
+                'inherits' => 'm-service'  // <--- inherits from M but keeps what we add here
+            ]
+        ];
+
+        $container = new Container($config);
+        $actualService = $container->get('o-service');
+
+        $this->assertInstanceOf(Fixtures\ClassO::class, $actualService);
     }
 }

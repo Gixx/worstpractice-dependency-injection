@@ -48,9 +48,13 @@ class Container implements ContainerInterface
      */
     private array $serviceContainer;
     /**
-     * @var array An array to to detect reference loops.
+     * @var array An array to detect reference loops.
      */
-    private array $loopDetector;
+    private array $referenceLoopDetector = [];
+    /**
+     * @var array An array to detect inheritance loops.
+     */
+    private array $inheritanceLoopDetector = [];
 
     /**
      * Container constructor.
@@ -119,8 +123,7 @@ class Container implements ContainerInterface
      */
     public function get($identifier): object
     {
-        $this->loopDetector = [];
-        return $this->getFromLibrary((string) $identifier);
+        return $this->getFromContainer((string) $identifier);
     }
 
     /**
@@ -129,18 +132,18 @@ class Container implements ContainerInterface
      * @throws RuntimeException
      * @return object
      */
-    private function getFromLibrary(string $identifier): object
+    private function getFromContainer(string $identifier): object
     {
-        if (in_array($identifier, $this->loopDetector, true)) {
+        if (in_array($identifier, $this->referenceLoopDetector, true)) {
             throw new RuntimeException(
-                sprintf('Reference loop detected! Reference chain: %s', implode(' -> ', $this->loopDetector)),
+                sprintf('Reference loop detected! Reference chain: %s', implode(' -> ', $this->referenceLoopDetector)),
                 1000
             );
         }
 
-        $this->loopDetector[] = $identifier;
+        $this->referenceLoopDetector[] = $identifier;
 
-        $this->onBeforeGet($identifier);
+        $this->prepareService($identifier);
 
         // If still not exists, then kill it.
         if (!$this->isServiceRegisteredIntoLibrary($identifier)) {
@@ -151,7 +154,7 @@ class Container implements ContainerInterface
         }
 
         // In this point we always have the same element in the last position we added 10 lines earlier.
-        array_pop($this->loopDetector);
+        array_pop($this->referenceLoopDetector);
 
         return $this->serviceLibrary[$identifier][self::SERVICE_SHARE]
             ? $this->serviceContainer[$identifier]
@@ -163,7 +166,7 @@ class Container implements ContainerInterface
      *
      * @param string $identifier
      */
-    private function onBeforeGet(string $identifier): void
+    private function prepareService(string $identifier): void
     {
         // Not registered in the library but it's a valid class name, or it's in the raw configuration: register.
         if (
@@ -287,13 +290,13 @@ class Container implements ContainerInterface
             return $this->serviceConfiguration[$identifier];
         }
 
-        $configuration = $this->serviceLibrary[$identifier]
-            ?? $this->configuration[$identifier]
-            ?? [];
+        // In case of classes without config, we provide an empty array
+        $configuration = $this->configuration[$identifier] ?? [];
 
         // Resolve inheritance.
         $this->resolveInheritance($configuration, $identifier);
 
+        // Save the configuration.
         $this->serviceConfiguration[$identifier] = $configuration;
 
         return $configuration;
@@ -314,14 +317,25 @@ class Container implements ContainerInterface
 
         if ($configuration[self::SERVICE_INHERIT] === $identifier) {
             throw new RuntimeException(
-                'Self referencing is not allowed.',
+                sprintf('Self referencing is not allowed: %s', $identifier),
                 1004
             );
         }
 
+        if (in_array($identifier, $this->inheritanceLoopDetector, true)) {
+            throw new RuntimeException(
+                sprintf('Inheritance loop detected for service: %s', $identifier),
+                1005
+            );
+        }
+
+        $this->inheritanceLoopDetector[] = $identifier;
         $parentConfiguration = $this->getServiceConfiguration($configuration[self::SERVICE_INHERIT]);
 
         foreach ($configuration as $key => $value) {
+            if ($key === self::SERVICE_INHERIT) {
+                continue;
+            }
             $parentConfiguration[$key] = $value;
         }
 
@@ -332,7 +346,6 @@ class Container implements ContainerInterface
         }
 
         $configuration = $parentConfiguration;
-        unset($parentConfiguration, $configuration[self::SERVICE_INHERIT]);
     }
 
     /**
@@ -350,7 +363,7 @@ class Container implements ContainerInterface
         if (!class_exists($className)) {
             throw new RuntimeException(
                 sprintf('The resolved class "%s" cannot be found.', $className),
-                1005
+                1006
             );
         }
 
@@ -379,7 +392,7 @@ class Container implements ContainerInterface
             if (!method_exists($serviceInstance, $method)) {
                 throw new RuntimeException(
                     sprintf('The method "%s::%s" does not exist or not public.', $className, $method),
-                    1006
+                    1007
                 );
             }
 
@@ -407,7 +420,7 @@ class Container implements ContainerInterface
         foreach ($argumentList as $key => $value) {
             // Associative array keys marks literal values
             if (is_numeric($key)) {
-                $value = $this->getFromLibrary($value);
+                $value = $this->getFromContainer($value);
             }
 
             $resolvedArgumentList[] = $value;
