@@ -209,10 +209,10 @@ class Container implements ContainerInterface
         // Overwrite any previous settings.
         $this->serviceLibrary[$identifier] = [
             self::SERVICE_INITIALIZED => true,
+            self::SERVICE_CLASS => get_class($serviceInstance),
             self::SERVICE_ARGUMENTS => [],
             self::SERVICE_METHOD_CALL => [],
             self::SERVICE_SHARE => $isShared,
-            self::SERVICE_CLASS => get_class($serviceInstance),
         ];
     }
 
@@ -268,13 +268,21 @@ class Container implements ContainerInterface
     private function registerServiceToLibrary(string $identifier): void
     {
         $serviceConfiguration = $this->getServiceConfiguration($identifier);
+        $className = $serviceConfiguration[self::SERVICE_CLASS] ?? $identifier;
+
+        if (!class_exists($className)) {
+            throw new RuntimeException(
+                sprintf('The resolved class "%s" cannot be found.', $className),
+                1006
+            );
+        }
 
         $this->serviceLibrary[$identifier] = [
             self::SERVICE_INITIALIZED => false,
-            self::SERVICE_CLASS => $this->resolveServiceClassName($identifier),
+            self::SERVICE_CLASS => $className,
             self::SERVICE_ARGUMENTS => $serviceConfiguration[self::SERVICE_ARGUMENTS] ?? [],
             self::SERVICE_METHOD_CALL => $serviceConfiguration[self::SERVICE_METHOD_CALL] ?? [],
-            self::SERVICE_SHARE => $serviceConfiguration[self::SERVICE_SHARE] ?? [],
+            self::SERVICE_SHARE => $serviceConfiguration[self::SERVICE_SHARE] ?? true,
         ];
     }
 
@@ -333,6 +341,7 @@ class Container implements ContainerInterface
         $parentConfiguration = $this->getServiceConfiguration($configuration[self::SERVICE_INHERIT]);
 
         foreach ($configuration as $key => $value) {
+            // the parent config will not have this key, since it's already resolved.
             if ($key === self::SERVICE_INHERIT) {
                 continue;
             }
@@ -349,17 +358,14 @@ class Container implements ContainerInterface
     }
 
     /**
-     * Retrieves real service class name.
+     * Verifies the service class name.
      *
-     * @param  string $identifier
+     * @param  string $className
      * @throws RuntimeException
      * @return string
      */
-    private function resolveServiceClassName(string $identifier): string
+    private function verifyServiceClassName(string $className): string
     {
-        $serviceConfiguration = $this->getServiceConfiguration($identifier);
-        $className = $serviceConfiguration[self::SERVICE_CLASS] ?? $identifier;
-
         if (!class_exists($className)) {
             throw new RuntimeException(
                 sprintf('The resolved class "%s" cannot be found.', $className),
