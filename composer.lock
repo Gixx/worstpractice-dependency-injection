@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0338e8183d049009e4457a07d4334837",
+    "content-hash": "460f9e9bcc7baee3b8ffca8d99e8d77c",
     "packages": [
         {
             "name": "psr/container",
@@ -545,16 +545,16 @@
         },
         {
             "name": "nette/application",
-            "version": "v3.0.5",
+            "version": "v3.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/application.git",
-                "reference": "2974fbfdaa06ca78b8f9f2c71bf16f91ce13f7a2"
+                "reference": "783ad6fc6444f63314175131885c04b3dd0291dd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/application/zipball/2974fbfdaa06ca78b8f9f2c71bf16f91ce13f7a2",
-                "reference": "2974fbfdaa06ca78b8f9f2c71bf16f91ce13f7a2",
+                "url": "https://api.github.com/repos/nette/application/zipball/783ad6fc6444f63314175131885c04b3dd0291dd",
+                "reference": "783ad6fc6444f63314175131885c04b3dd0291dd",
                 "shasum": ""
             },
             "require": {
@@ -626,32 +626,29 @@
                 "routing",
                 "seo"
             ],
-            "time": "2020-04-20T21:43:19+00:00"
+            "time": "2020-08-25T01:52:08+00:00"
         },
         {
             "name": "nette/component-model",
-            "version": "v3.0.0",
+            "version": "v3.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/component-model.git",
-                "reference": "3153441f3d64bbdac300e75b8e5dde36590f7e01"
+                "reference": "66409cf5507c77edb46ffa88cf6a92ff58395601"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/component-model/zipball/3153441f3d64bbdac300e75b8e5dde36590f7e01",
-                "reference": "3153441f3d64bbdac300e75b8e5dde36590f7e01",
+                "url": "https://api.github.com/repos/nette/component-model/zipball/66409cf5507c77edb46ffa88cf6a92ff58395601",
+                "reference": "66409cf5507c77edb46ffa88cf6a92ff58395601",
                 "shasum": ""
             },
             "require": {
                 "nette/utils": "^2.5 || ^3.0",
                 "php": ">=7.1"
             },
-            "conflict": {
-                "nette/application": "<2.4",
-                "nette/nette": "<2.2"
-            },
             "require-dev": {
                 "nette/tester": "^2.0",
+                "phpstan/phpstan": "^0.12",
                 "tracy/tracy": "^2.3"
             },
             "type": "library",
@@ -668,8 +665,8 @@
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause",
-                "GPL-2.0",
-                "GPL-3.0"
+                "GPL-2.0-only",
+                "GPL-3.0-only"
             ],
             "authors": [
                 {
@@ -687,7 +684,7 @@
                 "components",
                 "nette"
             ],
-            "time": "2019-02-20T07:13:15+00:00"
+            "time": "2020-04-21T13:48:20+00:00"
         },
         {
             "name": "nette/di",
@@ -1197,16 +1194,16 @@
         },
         {
             "name": "nette/utils",
-            "version": "v3.1.1",
+            "version": "v3.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/utils.git",
-                "reference": "2c17d16d8887579ae1c0898ff94a3668997fd3eb"
+                "reference": "c09937fbb24987b2a41c6022ebe84f4f1b8eec0f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/utils/zipball/2c17d16d8887579ae1c0898ff94a3668997fd3eb",
-                "reference": "2c17d16d8887579ae1c0898ff94a3668997fd3eb",
+                "url": "https://api.github.com/repos/nette/utils/zipball/c09937fbb24987b2a41c6022ebe84f4f1b8eec0f",
+                "reference": "c09937fbb24987b2a41c6022ebe84f4f1b8eec0f",
                 "shasum": ""
             },
             "require": {
@@ -1219,7 +1216,7 @@
             },
             "suggest": {
                 "ext-gd": "to use Image",
-                "ext-iconv": "to use Strings::webalize() and toAscii()",
+                "ext-iconv": "to use Strings::webalize(), toAscii(), chr() and reverse()",
                 "ext-intl": "to use Strings::webalize(), toAscii(), normalize() and compare()",
                 "ext-json": "to use Nette\\Utils\\Json",
                 "ext-mbstring": "to use Strings::lower() etc...",
@@ -1271,7 +1268,7 @@
                 "utility",
                 "validation"
             ],
-            "time": "2020-02-09T14:10:55+00:00"
+            "time": "2020-08-07T10:34:21+00:00"
         },
         {
             "name": "ocramius/package-versions",
@@ -2229,6 +2226,7 @@
             "keywords": [
                 "tokenizer"
             ],
+            "abandoned": true,
             "time": "2020-02-07T06:19:00+00:00"
         },
         {
@@ -5428,12 +5426,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symplify/auto-bind-parameter.git",
-                "reference": "da476dadb0ee9d4ac792439b168b882387a1ac92"
+                "reference": "8d0ae1944540f590d8131994c4f73a231fe6be85"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symplify/auto-bind-parameter/zipball/da476dadb0ee9d4ac792439b168b882387a1ac92",
-                "reference": "da476dadb0ee9d4ac792439b168b882387a1ac92",
+                "url": "https://api.github.com/repos/symplify/auto-bind-parameter/zipball/8d0ae1944540f590d8131994c4f73a231fe6be85",
+                "reference": "8d0ae1944540f590d8131994c4f73a231fe6be85",
                 "shasum": ""
             },
             "require": {
@@ -5462,6 +5460,17 @@
                 "MIT"
             ],
             "description": "Auto bind parameters for your Symfony applications",
+            "funding": [
+                {
+                    "url": "https://github.com/tomasvotruba",
+                    "type": "github"
+                },
+                {
+                    "url": "https://www.patreon.com/rectorphp",
+                    "type": "patreon"
+                }
+            ],
+            "abandoned": "symplify/package-builder",
             "time": "2020-04-20T19:22:31+00:00"
         },
         {
@@ -5470,12 +5479,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symplify/autowire-array-parameter.git",
-                "reference": "457c43363626dd0bcbd89753542db45fd9ea0c52"
+                "reference": "5936fc746424bd79821eb960326486a2335a447f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symplify/autowire-array-parameter/zipball/457c43363626dd0bcbd89753542db45fd9ea0c52",
-                "reference": "457c43363626dd0bcbd89753542db45fd9ea0c52",
+                "url": "https://api.github.com/repos/symplify/autowire-array-parameter/zipball/5936fc746424bd79821eb960326486a2335a447f",
+                "reference": "5936fc746424bd79821eb960326486a2335a447f",
                 "shasum": ""
             },
             "require": {
@@ -5504,6 +5513,16 @@
                 "MIT"
             ],
             "description": "Autowire array parameters for your Symfony applications",
+            "funding": [
+                {
+                    "url": "https://github.com/tomasvotruba",
+                    "type": "github"
+                },
+                {
+                    "url": "https://www.patreon.com/rectorphp",
+                    "type": "patreon"
+                }
+            ],
             "time": "2020-04-20T19:22:31+00:00"
         },
         {
@@ -5512,12 +5531,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symplify/coding-standard.git",
-                "reference": "8badf2a6edf9dadd9f0fa73e977d7cd61f3ddc0f"
+                "reference": "d9f6fe1effbf8cc4a8a094a6ede700768a2ed6fe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symplify/coding-standard/zipball/8badf2a6edf9dadd9f0fa73e977d7cd61f3ddc0f",
-                "reference": "8badf2a6edf9dadd9f0fa73e977d7cd61f3ddc0f",
+                "url": "https://api.github.com/repos/symplify/coding-standard/zipball/d9f6fe1effbf8cc4a8a094a6ede700768a2ed6fe",
+                "reference": "d9f6fe1effbf8cc4a8a094a6ede700768a2ed6fe",
                 "shasum": ""
             },
             "require": {
@@ -5572,12 +5591,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symplify/easy-coding-standard.git",
-                "reference": "6a9d575f21520fac614a2f344c2ea9cbbe563a37"
+                "reference": "268b183aa36dd05c68ebd9e4189365a3eb95444f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symplify/easy-coding-standard/zipball/6a9d575f21520fac614a2f344c2ea9cbbe563a37",
-                "reference": "6a9d575f21520fac614a2f344c2ea9cbbe563a37",
+                "url": "https://api.github.com/repos/symplify/easy-coding-standard/zipball/268b183aa36dd05c68ebd9e4189365a3eb95444f",
+                "reference": "268b183aa36dd05c68ebd9e4189365a3eb95444f",
                 "shasum": ""
             },
             "require": {
@@ -5653,12 +5672,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symplify/package-builder.git",
-                "reference": "ab54eb67173b238a8c479d49393a57e852058abf"
+                "reference": "106990620c13c6cc988aa892ba150e2b0cab7d76"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symplify/package-builder/zipball/ab54eb67173b238a8c479d49393a57e852058abf",
-                "reference": "ab54eb67173b238a8c479d49393a57e852058abf",
+                "url": "https://api.github.com/repos/symplify/package-builder/zipball/106990620c13c6cc988aa892ba150e2b0cab7d76",
+                "reference": "106990620c13c6cc988aa892ba150e2b0cab7d76",
                 "shasum": ""
             },
             "require": {
@@ -5691,6 +5710,16 @@
                 "MIT"
             ],
             "description": "Dependency Injection, Console and Kernel toolkit for Symplify packages.",
+            "funding": [
+                {
+                    "url": "https://github.com/tomasvotruba",
+                    "type": "github"
+                },
+                {
+                    "url": "https://www.patreon.com/rectorphp",
+                    "type": "patreon"
+                }
+            ],
             "time": "2020-04-19T11:07:36+00:00"
         },
         {
@@ -5699,12 +5728,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symplify/phpstan-extensions.git",
-                "reference": "fa8fbc73afc7963c219e9525276ce38a6a7df59f"
+                "reference": "812f2b19916c30daeb6325e3c5199759aa8381a3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symplify/phpstan-extensions/zipball/fa8fbc73afc7963c219e9525276ce38a6a7df59f",
-                "reference": "fa8fbc73afc7963c219e9525276ce38a6a7df59f",
+                "url": "https://api.github.com/repos/symplify/phpstan-extensions/zipball/812f2b19916c30daeb6325e3c5199759aa8381a3",
+                "reference": "812f2b19916c30daeb6325e3c5199759aa8381a3",
                 "shasum": ""
             },
             "require": {
@@ -5754,12 +5783,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symplify/set-config-resolver.git",
-                "reference": "2b623ffc4f0bc263f4083d58e6c94f142d43ac3f"
+                "reference": "fe5a76a436c8a016354097fdbb38fd4715ab9450"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symplify/set-config-resolver/zipball/2b623ffc4f0bc263f4083d58e6c94f142d43ac3f",
-                "reference": "2b623ffc4f0bc263f4083d58e6c94f142d43ac3f",
+                "url": "https://api.github.com/repos/symplify/set-config-resolver/zipball/fe5a76a436c8a016354097fdbb38fd4715ab9450",
+                "reference": "fe5a76a436c8a016354097fdbb38fd4715ab9450",
                 "shasum": ""
             },
             "require": {
@@ -5789,6 +5818,16 @@
                 "MIT"
             ],
             "description": "Resolve config and sets from configs and cli opptions for CLI applications",
+            "funding": [
+                {
+                    "url": "https://github.com/tomasvotruba",
+                    "type": "github"
+                },
+                {
+                    "url": "https://www.patreon.com/rectorphp",
+                    "type": "patreon"
+                }
+            ],
             "time": "2020-04-20T19:22:31+00:00"
         },
         {
@@ -5797,12 +5836,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symplify/smart-file-system.git",
-                "reference": "b773b9da88a11aa89c409042c300e2dcde5a4535"
+                "reference": "72a7bc6bd5807f487c5f18a8f9bb08272d03c87a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symplify/smart-file-system/zipball/b773b9da88a11aa89c409042c300e2dcde5a4535",
-                "reference": "b773b9da88a11aa89c409042c300e2dcde5a4535",
+                "url": "https://api.github.com/repos/symplify/smart-file-system/zipball/72a7bc6bd5807f487c5f18a8f9bb08272d03c87a",
+                "reference": "72a7bc6bd5807f487c5f18a8f9bb08272d03c87a",
                 "shasum": ""
             },
             "require": {
@@ -5832,7 +5871,17 @@
                 "MIT"
             ],
             "description": "Sanitized FileInfo with safe getRealPath() and other handy methods",
-            "time": "2020-03-18T23:25:49+00:00"
+            "funding": [
+                {
+                    "url": "https://github.com/tomasvotruba",
+                    "type": "github"
+                },
+                {
+                    "url": "https://www.patreon.com/rectorphp",
+                    "type": "patreon"
+                }
+            ],
+            "time": "2020-03-18T23:14:48+00:00"
         },
         {
             "name": "thecodingmachine/phpstan-strict-rules",
