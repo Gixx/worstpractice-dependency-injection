@@ -35,15 +35,15 @@
     "psr/container": "1.0.0"
   },
   "require-dev": {
-    "friendsofphp/php-cs-fixer": "2.16.1",
-    "phpmd/phpmd": "2.8.2",
-    "phpstan/phpstan": "0.12.18",
-    "phpunit/phpunit": "9.1.1",
+    "friendsofphp/php-cs-fixer": "v2.16.7",
+    "phpmd/phpmd": "2.9.1",
+    "phpstan/phpstan": "0.12.53",
+    "phpunit/phpunit": "9.4.2",
     "roave/security-advisories": "dev-master",
-    "squizlabs/php_codesniffer": "3.5.4",
-    "symplify/easy-coding-standard": "7.2.8",
-    "symplify/phpstan-extensions": "7.2.8",
-    "thecodingmachine/phpstan-strict-rules": "0.12.0"
+    "squizlabs/php_codesniffer": "3.5.8",
+    "symplify/easy-coding-standard": "8.3.48",
+    "symplify/phpstan-extensions": "8.3.48",
+    "thecodingmachine/phpstan-strict-rules": "v0.12.1"
   },
   "scripts-descriptions": {
     "check": "Run all tests!"
