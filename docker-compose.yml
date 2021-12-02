@@ -6,4 +6,5 @@ services:
       working_dir: /application
       volumes:
         - .:/application
-      command: tail -f /dev/null
+      stdin_open: true
+      tty: true
