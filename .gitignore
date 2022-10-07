@@ -1,8 +1,8 @@
 .DS_Store
 .idea
 .php_cs.cache
-composer.phar
 /vendor/*
 !/vendor/.gitkeep
 /build/*
 !/build/.gitkeep
+.phpunit.result.cache
