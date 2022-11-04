@@ -1,7 +1,7 @@
 {
   "name": "gixx/worstpractice-dependency-injection",
   "type": "library",
-  "version": "1.0.1",
+  "version": "1.0.6",
   "description": "A simple dependency injection container",
   "homepage": "http://www.worstpractice.dev",
   "minimum-stability": "stable",
