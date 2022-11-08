@@ -1,7 +1,7 @@
 version: "3.1"
 services:
-    php74:
-      image: adhocore/phpfpm:7.4
+    php82:
+      image: adhocore/phpfpm:8.2
       container_name: worstpractice-dependency-injection-php-fpm
       working_dir: /application
       volumes:

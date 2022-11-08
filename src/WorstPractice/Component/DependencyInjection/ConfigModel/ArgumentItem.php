@@ -13,16 +13,15 @@
 
 declare(strict_types=1);
 
-namespace WorstPracticeTest\Fixtures;
+namespace WorstPractice\Component\DependencyInjection\ConfigModel;
 
-use DateTime;
-
-class ClassZ
+readonly class ArgumentItem
 {
-    private DateTime $date;
-
-    public function __construct(DateTime $date)
-    {
-        $this->date = $date;
+    public function __construct(
+        public int $index,
+        public bool $isReference,
+        public string $value,
+        public string $type,
+    ) {
     }
 }

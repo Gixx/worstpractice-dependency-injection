@@ -3,9 +3,9 @@
 /**
  * Worst Practice DI Component
  *
- * PHP version 7.4
+ * PHP version 8.2
  *
- * @copyright 2020 Worst Practice
+ * @copyright 2022 Worst Practice
  * @license   https://opensource.org/licenses/MIT The MIT License (MIT)
  *
  * @link http://www.worstpractice.dev
@@ -19,6 +19,7 @@ class ClassX
 {
     private ClassY $classY;
     private ClassZ $classZ;
+    public int $id = 1234;
 
     public function __construct(ClassY $classY, ClassZ $classZ)
     {

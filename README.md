@@ -2,7 +2,7 @@
 
 ## DIY Dependency Injection
 
-[![PHP Version](https://img.shields.io/badge/PHP-7.4-blue)](https://www.php.net/ChangeLog-7.php#7.4.5)
+[![PHP Version](https://img.shields.io/badge/PHP-8,2-blue)](https://www.php.net/ChangeLog-8.php)
 [![Build Status](https://scrutinizer-ci.com/g/Gixx/worstpractice-dependency-injection/badges/build.png?b=master)](https://scrutinizer-ci.com/g/Gixx/worstpractice-dependency-injection/build-status/master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Gixx/worstpractice-dependency-injection/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Gixx/worstpractice-dependency-injection/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/Gixx/worstpractice-dependency-injection/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Gixx/worstpractice-dependency-injection/?branch=master)
@@ -14,7 +14,7 @@ The complete source code for the series of articles [DIY Dependency Injection Co
 ### Purpose
 
 The only purpose is practicing:
-* PHP 7.4 features
+* PHP 8.2 features
 * keep coding standards
 * write clean code
 * write strict-typed code
@@ -80,7 +80,9 @@ $config = [
     ]
 ];
 
-$container = new \WorstPractice\Component\DependencyInjection\Container($config);
+$configParser = new \WorstPractice\Component\DependencyInjection\ConfigParser\ArrayParser();
+$serviceLibrary = new \WorstPractice\Component\DependencyInjection\ServiceLibrary($configParser);
+$container = new \WorstPractice\Component\DependencyInjection\Container($serviceLibrary, $config);
 
 $authService = $_ENV['environment'] === 'dev'
     ? new \Namespace\To\DebugAuthService()

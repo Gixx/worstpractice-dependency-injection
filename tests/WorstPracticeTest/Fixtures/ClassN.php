@@ -3,9 +3,9 @@
 /**
  * Worst Practice DI Component
  *
- * PHP version 7.4
+ * PHP version 8.2
  *
- * @copyright 2020 Worst Practice
+ * @copyright 2022 Worst Practice
  * @license   https://opensource.org/licenses/MIT The MIT License (MIT)
  *
  * @link http://www.worstpractice.dev
@@ -20,8 +20,9 @@ use DateTime;
 class ClassN
 {
     private DateTime $date;
+    private string $data;
 
-    public function __construct(DateTime $date)
+    public function __construct(DateTime $date, string $data = '', array $options = [])
     {
         $this->date = $date;
     }
