@@ -42,10 +42,6 @@ class ServiceLibrary
         $this->configModel = $this->configParser->parse($config);
 
         foreach ($this->configModel as $id => $configItem) {
-            if (!$configItem instanceof ConfigItem) {
-                continue;
-            }
-
             $resolvedConfigItem = $this->resolveInheritance($configItem);
             $this->configModel->update($id, $resolvedConfigItem);
 

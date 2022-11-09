@@ -523,4 +523,90 @@ class ContainerTest extends TestCase
 
         $this->assertInstanceOf(Fixtures\ClassO::class, $actualService);
     }
+
+    public function testContainerCannotCreateInstance(): void
+    {
+        $config = [
+            'a-service' => [
+                'class' => Fixtures\ClassA::class,
+                'arguments' => [
+                    // don't define required argument
+                ],
+            ],
+        ];
+
+        $container = new Container(new ServiceLibrary(new ArrayParser()), $config);
+
+        $this->expectExceptionCode(Error::ERROR_CLASS_NOT_INSTANTIABLE->getCode());
+        $container->get('a-service');
+    }
+
+    public function testContainerCreateInstanceWithRightParameterTypes(): void
+    {
+        $config = [
+            'DateService' => [
+                'class' => DateTime::class,
+                'arguments' => [
+                    'dateTimeString' => '1980-02-19 12:15:00'
+                ],
+            ],
+            'e-service' => [
+                'class' => Fixtures\ClassE::class,
+                'arguments' => [
+                    'DateService',
+                    'string scalar' => 'something',
+                    'negative int scalar' => -15,
+                    'int as string' => '15',
+                    'double scalar' => 23.45,
+                    'negative double as string' => '-23.45',
+                    'null' => null,
+                    'array' => ['data'],
+                    'boolean' => true
+                ],
+            ],
+        ];
+
+        $container = new Container(new ServiceLibrary(new ArrayParser()), $config);
+        /** @var Fixtures\ClassE $instance */
+        $instance = $container->get('e-service');
+
+        $parameters = $instance->getParams();
+        $this->assertSame('object', gettype($parameters[0]));
+        $this->assertSame(DateTime::class, $parameters[0]::class);
+        $this->assertSame('string', gettype($parameters[1]));
+        $this->assertSame('integer', gettype($parameters[2]));
+        $this->assertLessThan(0, $parameters[2]);
+        $this->assertSame('integer', gettype($parameters[3]));
+        $this->assertSame('double', gettype($parameters[4]));
+        $this->assertSame('double', gettype($parameters[5]));
+        $this->assertLessThan(0, $parameters[5]);
+        $this->assertSame('NULL', gettype($parameters[6]));
+        $this->assertSame('array', gettype($parameters[7]));
+        $this->assertSame('data', $parameters[7][0]);
+        $this->assertSame('boolean', gettype($parameters[8]));
+        $this->assertTrue($parameters[8]);
+    }
+
+    public function testContainerFailToCallMethod(): void
+    {
+        $dateTimeString = '1980-02-19 12:15:00';
+
+        $config = [
+            'DateService' => [
+                'class' => DateTime::class,
+                'arguments' => [
+                    'dateTimeString' => $dateTimeString
+                ],
+                'calls' => [
+                    ['setDate', ['param' => 'totally wrong parameter']],
+                ],
+                'shared' => true
+            ],
+        ];
+
+        $container = new Container(new ServiceLibrary(new ArrayParser()), $config);
+
+        $this->expectExceptionCode(Error::ERROR_METHOD_CANNOT_BE_CALLED->getCode());
+        $container->get('DateService');
+    }
 }

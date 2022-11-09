@@ -41,15 +41,40 @@ abstract class AbstractParser implements ConfigParserInterface
         $numericIndex = 0;
 
         foreach ($data as $key => $value) {
+            $value = $this->convertNumericStringToNumber($value);
+
             $argumentItemCollection->add(new ArgumentItem(
                 index: $numericIndex++,
                 isReference: is_numeric($key),
-                value: is_object($value) ? (string) json_encode($value) : strval($value),
-                type: is_object($value) ? 'array' : gettype($value)
+                value: $this->stringifyValue($value),
+                type: $this->getValueType($value)
             ));
         }
 
         return $argumentItemCollection;
+    }
+
+    public function convertNumericStringToNumber(mixed $value): mixed
+    {
+        if (!is_string($value) || !is_numeric($value)) {
+            return $value;
+        }
+
+        return filter_var($value, FILTER_VALIDATE_INT) ?: filter_var($value, FILTER_VALIDATE_FLOAT);
+    }
+
+    public function stringifyValue(mixed $value): string
+    {
+        return is_object($value) | is_array($value)
+            ? (string)json_encode($value)
+            : strval($value);
+    }
+
+    public function getValueType(mixed $value): string
+    {
+        return is_object($value) | is_array($value)
+            ? 'array' :
+            gettype($value);
     }
 
     /**

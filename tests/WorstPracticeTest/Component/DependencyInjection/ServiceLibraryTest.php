@@ -19,7 +19,6 @@ use WorstPractice\Component\DependencyInjection\ConfigParser\ArrayParser;
 use WorstPractice\Component\DependencyInjection\Error;
 use WorstPractice\Component\DependencyInjection\ServiceLibrary;
 use DateTime;
-use OutOfBoundsException;
 use PHPUnit\Framework\TestCase;
 
 class ServiceLibraryTest extends TestCase
@@ -52,6 +51,16 @@ class ServiceLibraryTest extends TestCase
         $this->assertTrue($serviceLibrary->has('SharedDateService'));
         $this->assertTrue($serviceLibrary->has('NotSharedDateService'));
         $this->assertTrue($serviceLibrary->has(DateTime::class));
+    }
+
+    /**
+     * Tests if the library can't build from wrong config.
+     */
+    public function testLibraryBuildFailWithWrongConfigData(): void
+    {
+        $serviceLibrary = new ServiceLibrary(new ArrayParser());
+        $this->expectExceptionCode(Error::ERROR_JSON_ENCODE_OR_DECODE->getCode());
+        $serviceLibrary->build(NAN);
     }
 
     /**

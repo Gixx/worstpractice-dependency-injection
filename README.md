@@ -2,10 +2,11 @@
 
 ## DIY Dependency Injection
 
-[![PHP Version](https://img.shields.io/badge/PHP-8,2-blue)](https://www.php.net/ChangeLog-8.php)
-[![Build Status](https://scrutinizer-ci.com/g/Gixx/worstpractice-dependency-injection/badges/build.png?b=master)](https://scrutinizer-ci.com/g/Gixx/worstpractice-dependency-injection/build-status/master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Gixx/worstpractice-dependency-injection/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Gixx/worstpractice-dependency-injection/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/Gixx/worstpractice-dependency-injection/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Gixx/worstpractice-dependency-injection/?branch=master)
+[![PHP Version](https://img.shields.io/badge/PHP-8.2-blue)](https://www.php.net/ChangeLog-8.php)
+![Build Status](https://img.shields.io/badge/Build-N/A-orange)
+![Scrutinizer Code Quality](https://img.shields.io/badge/Scrutinizer-N/A-orange)
+![PHStan](https://img.shields.io/badge/PHPStan-passed-success)
+![Code Coverage](https://img.shields.io/badge/Coverage-100_%25-success)
 [![Packagist Package](https://flat.badgen.net/packagist/name/gixx/worstpractice-dependency-injection)](https://packagist.org/packages/gixx/worstpractice-dependency-injection)
 [![Packagist Downloads](https://flat.badgen.net/packagist/dt/gixx/worstpractice-dependency-injection)](https://packagist.org/packages/gixx/worstpractice-dependency-injection)
 
@@ -14,13 +15,14 @@ The complete source code for the series of articles [DIY Dependency Injection Co
 ### Purpose
 
 The only purpose is practicing:
-* PHP 8.2 features
+* PHP 7.4, 8.0, 8.1 and 8.2 features
 * keep coding standards
 * write clean code
 * write strict-typed code
 * Unit testing
 
-Although, I believe it works like any other DIC, I don't recommend to use it in production.   
+Although, I believe it works like any other DIC, I don't recommend to use it in production. Unfortunately the code quality
+checks on the Scrutinizer CI side don't yet support PHP 8.2.
 
 ### Installation
 
@@ -109,7 +111,10 @@ docker exec -it worstpractice-dependency-injection-php-fpm php composer.phar che
 The following tests will run:
 * PHP lint
 * PHP Mess Detector
+* PHP Unit
+* PHPStan (max level, no ignored Errors)
+
+The following tests form the PHP 7.4 version are now ignored, since they don't yet have PHP 8.2 support:
+
 * PHP-CS-Fixer
 * PHP Code Sniffer
-* PHP Unit
-* PHPStan
