@@ -1,7 +1,7 @@
 {
   "name": "gixx/worstpractice-dependency-injection",
   "type": "library",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "description": "A simple dependency injection container",
   "homepage": "http://www.worstpractice.dev",
   "minimum-stability": "stable",
@@ -17,7 +17,7 @@
   "config": {
     "sort-packages": true,
     "platform": {
-      "php": "7.4"
+      "php": "8.2"
     },
     "allow-plugins": {
       "dealerdirect/phpcodesniffer-composer-installer": true
@@ -34,19 +34,18 @@
     }
   },
   "require": {
-    "php": ">=7.4",
-    "psr/container": "1.0.0"
+    "php": ">=8.2",
+    "psr/container": "2.0.2"
   },
   "require-dev": {
-    "friendsofphp/php-cs-fixer": "v2.16.7",
-    "phpmd/phpmd": "2.9.1",
-    "phpstan/phpstan": "0.12.53",
-    "phpunit/phpunit": "9.4.2",
+    "friendsofphp/php-cs-fixer": "v3.2.1",
+    "jetbrains/phpstorm-attributes": "^1.0",
+    "phpmd/phpmd": "2.13.0",
+    "phpstan/phpstan": "1.9.0",
+    "phpunit/phpunit": "9.5.26",
     "roave/security-advisories": "dev-master",
-    "squizlabs/php_codesniffer": "3.5.8",
-    "symplify/easy-coding-standard": "8.3.48",
-    "symplify/phpstan-extensions": "8.3.48",
-    "thecodingmachine/phpstan-strict-rules": "v0.12.1"
+    "squizlabs/php_codesniffer": "4.0.x-dev",
+    "thecodingmachine/phpstan-strict-rules": "v1.0.0"
   },
   "scripts-descriptions": {
     "check": "Run all tests!"
@@ -55,8 +54,6 @@
     "check": [
       "@lint",
       "@md",
-      "@cs-fixer",
-      "@cs",
       "@unit",
       "@phpstan"
     ],
@@ -65,6 +62,6 @@
     "cs-fixer": "vendor/bin/php-cs-fixer fix src/",
     "cs": "vendor/bin/phpcs --standard=PSR12 src/",
     "unit": "vendor/bin/phpunit -c phpunit.xml --testdox --colors=always",
-    "phpstan": "vendor/bin/phpstan analyse src --level=7"
+    "phpstan": "vendor/bin/phpstan analyse src --level=9"
   }
 }

@@ -2,7 +2,7 @@ inherit: true
 
 filter:
   paths: ['src/*']
-  excluded_paths: ['vendor/*', 'tests/*', 'build/*', 'phpdocker/*']
+  excluded_paths: ['vendor/*', 'tests/*', 'build/*']
 
 checks:
   php:
@@ -35,9 +35,9 @@ before_commands:
 
 build:
   nodes:
-    php74:
+    php82:
       environment:
-        php: '7.4'
+        php: '8.2'
 
       tests:
         override:

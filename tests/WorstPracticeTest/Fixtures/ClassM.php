@@ -3,9 +3,9 @@
 /**
  * Worst Practice DI Component
  *
- * PHP version 7.4
+ * PHP version 8.2
  *
- * @copyright 2020 Worst Practice
+ * @copyright 2022 Worst Practice
  * @license   https://opensource.org/licenses/MIT The MIT License (MIT)
  *
  * @link http://www.worstpractice.dev
@@ -17,10 +17,15 @@ namespace WorstPracticeTest\Fixtures;
 
 class ClassM
 {
-    private ClassN $classN;
+    private object $objectReference;
 
     public function __construct(ClassN $classN)
     {
-        $this->classN = $classN;
+        $this->objectReference = $classN;
+    }
+
+    public function changeInjectedClass(object $otherObjectReference): void
+    {
+        $this->objectReference = $otherObjectReference;
     }
 }

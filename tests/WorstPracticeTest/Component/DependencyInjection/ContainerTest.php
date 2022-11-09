@@ -3,9 +3,9 @@
 /**
  * Worst Practice DI Component
  *
- * PHP version 7.4
+ * PHP version 8.2
  *
- * @copyright 2020 Worst Practice
+ * @copyright 2022 Worst Practice
  * @license   https://opensource.org/licenses/MIT The MIT License (MIT)
  *
  * @link http://www.worstpractice.dev
@@ -15,19 +15,16 @@ declare(strict_types=1);
 
 namespace WorstPracticeTest\Component\DependencyInjection;
 
+use WorstPractice\Component\DependencyInjection\ConfigParser\ArrayParser;
 use WorstPractice\Component\DependencyInjection\Container;
 use WorstPractice\Component\DependencyInjection\ContainerInterface;
+use WorstPractice\Component\DependencyInjection\Error;
+use WorstPractice\Component\DependencyInjection\ServiceLibrary;
 use DateTime;
 use DateTimeZone;
-use OutOfBoundsException;
-use RuntimeException;
 use PHPUnit\Framework\TestCase;
 use WorstPracticeTest\Fixtures;
 
-/**
- * Class ContainerTest
- * @package WorstPracticeTest\Component\DependencyInjection
- */
 class ContainerTest extends TestCase
 {
     /**
@@ -35,17 +32,18 @@ class ContainerTest extends TestCase
      */
     public function testConstructor(): void
     {
-        $container = new Container([]);
+        $container = new Container(new ServiceLibrary(new ArrayParser()), []);
 
         $this->assertInstanceOf(ContainerInterface::class, $container);
     }
 
     /**
-     * Test if the container can instantiate built-in class without configuration.
+     * Test if the container can instantiate a built-in class without configuration.
      */
     public function testContainerRetrievingBuiltInClass(): void
     {
-        $container = new Container([]);
+        $container = new Container(new ServiceLibrary(new ArrayParser()), []);
+
 
         $this->assertTrue($container->has(DateTime::class));
         $actualObject = $container->get(DateTime::class);
@@ -57,13 +55,12 @@ class ContainerTest extends TestCase
      */
     public function testContainerGetErrorForNonExistingClass(): void
     {
-        $container = new Container([]);
+        $container = new Container(new ServiceLibrary(new ArrayParser()), []);
 
         $nonExistingClass = '\\Namespace\\To\\Non\\Existing\\Class\\A' . md5('something');
 
         $this->assertFalse($container->has($nonExistingClass));
-        $this->expectException(OutOfBoundsException::class);
-        $this->expectExceptionCode(1001);
+        $this->expectExceptionCode(Error::ERROR_SERVICE_NOT_FOUND->getCode());
         $container->get($nonExistingClass);
     }
 
@@ -78,10 +75,10 @@ class ContainerTest extends TestCase
             ]
         ];
 
-        $container = new Container($config);
+        $container = new Container(new ServiceLibrary(new ArrayParser()), $config);
 
         $this->assertTrue($container->has('ServiceAlias'));
-        $this->expectException(RuntimeException::class);
+        $this->expectExceptionCode(Error::ERROR_CLASS_NOT_FOUND->getCode());
         $container->get('ServiceAlias');
     }
 
@@ -99,7 +96,7 @@ class ContainerTest extends TestCase
             ]
         ];
 
-        $container = new Container($config);
+        $container = new Container(new ServiceLibrary(new ArrayParser()), $config);
 
         $this->assertTrue($container->has('DateService'));
         $this->assertTrue($container->has(DateTime::class));
@@ -127,7 +124,7 @@ class ContainerTest extends TestCase
             ]
         ];
 
-        $container = new Container($config);
+        $container = new Container(new ServiceLibrary(new ArrayParser()), $config);
 
         $date1 = $container->get('DateService');
         $this->assertSame($dateTimeString, $date1->format('Y-m-d H:i:s'));
@@ -155,7 +152,7 @@ class ContainerTest extends TestCase
             ]
         ];
 
-        $container = new Container($config);
+        $container = new Container(new ServiceLibrary(new ArrayParser()), $config);
 
         $date1 = $container->get('DateService');
         $this->assertSame($dateTimeString, $date1->format('Y-m-d H:i:s'));
@@ -167,7 +164,7 @@ class ContainerTest extends TestCase
     }
 
     /**
-     * Test if container allows to overwrite a service on-the-fly before the first instantiation
+     * Test if container allows to overwrite a service on-the-fly before the first instantiation.
      */
     public function testContainerWithInjectedInstance(): void
     {
@@ -181,7 +178,7 @@ class ContainerTest extends TestCase
             ]
         ];
 
-        $container = new Container($config);
+        $container = new Container(new ServiceLibrary(new ArrayParser()), $config);
 
         $this->assertTrue($container->has('DateService'));
 
@@ -194,7 +191,7 @@ class ContainerTest extends TestCase
     }
 
     /**
-     * Test if container blocks to overwrite a service on-the-fly after the first instantiation
+     * Test if container blocks to overwrite a service on-the-fly after the first instantiation.
      */
     public function testContainerFailingDoubleInstantiation(): void
     {
@@ -208,7 +205,7 @@ class ContainerTest extends TestCase
             ]
         ];
 
-        $container = new Container($config);
+        $container = new Container(new ServiceLibrary(new ArrayParser()), $config);
 
         $this->assertTrue($container->has('DateService'));
 
@@ -217,7 +214,7 @@ class ContainerTest extends TestCase
 
         $this->assertNotSame($date1->format('Y-m-d H:i:s'), $date2->format('Y-m-d H:i:s'));
 
-        $this->expectException(RuntimeException::class);
+        $this->expectExceptionCode(Error::ERROR_SERVICE_ALREADY_INITIALIZED->getCode());
         $container->set('DateService', $date2);
     }
 
@@ -232,7 +229,6 @@ class ContainerTest extends TestCase
                 'arguments' => [
                     'dateTimeString' => '1980-02-19 12:15:00'
                 ],
-                'shared' => true
             ],
             'NotSharedDateService' => [
                 'inherits' => 'SharedDateService',
@@ -243,7 +239,7 @@ class ContainerTest extends TestCase
             ]
         ];
 
-        $container = new Container($config);
+        $container = new Container(new ServiceLibrary(new ArrayParser()), $config);
 
         $sharedDate1 = $container->get('SharedDateService');
         $notSharedDate1 = $container->get('NotSharedDateService');
@@ -282,10 +278,8 @@ class ContainerTest extends TestCase
             ],
         ];
 
-        $container = new Container($config);
-
-        $this->expectException(RuntimeException::class);
-        $container->get('NotSharedDateService');
+        $this->expectExceptionCode(Error::ERROR_INHERITANCE_LOOP->getCode());
+        new Container(new ServiceLibrary(new ArrayParser()), $config);
     }
 
     /**
@@ -300,10 +294,8 @@ class ContainerTest extends TestCase
             ],
         ];
 
-        $container = new Container($config);
-
-        $this->expectException(RuntimeException::class);
-        $container->get('NotSharedDateService');
+        $this->expectExceptionCode(Error::ERROR_SELF_REFERENCE->getCode());
+        new Container(new ServiceLibrary(new ArrayParser()), $config);
     }
 
     /**
@@ -318,10 +310,8 @@ class ContainerTest extends TestCase
             ],
         ];
 
-        $container = new Container($config);
-
-        $this->expectException(RuntimeException::class);
-        $container->get('NotSharedDateService');
+        $this->expectExceptionCode(Error::ERROR_RECORD_NOT_FOUND->getCode());
+        new Container(new ServiceLibrary(new ArrayParser()), $config);
     }
 
     /**
@@ -351,7 +341,7 @@ class ContainerTest extends TestCase
             ],
         ];
 
-        $container = new Container($config);
+        $container = new Container(new ServiceLibrary(new ArrayParser()), $config);
 
         $date = $container->get('DateService');
         $this->assertSame('2000-03-24', $date->format('Y-m-d'));
@@ -380,9 +370,9 @@ class ContainerTest extends TestCase
             ],
         ];
 
-        $container = new Container($config);
+        $container = new Container(new ServiceLibrary(new ArrayParser()), $config);
 
-        $this->expectException(RuntimeException::class);
+        $this->expectExceptionCode(Error::ERROR_UNKNOWN_METHOD_CALL->getCode());
         $container->get('DateService');
     }
 
@@ -400,7 +390,7 @@ class ContainerTest extends TestCase
             ],
         ];
 
-        $container = new Container($config);
+        $container = new Container(new ServiceLibrary(new ArrayParser()), $config);
         $this->assertFalse($container->has('n-service'));
 
         $date = new DateTime('2000-01-01 01:01:01');
@@ -444,10 +434,9 @@ class ContainerTest extends TestCase
             ],
         ];
 
-        $container = new Container($config);
+        $container = new Container(new ServiceLibrary(new ArrayParser()), $config);
 
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionCode(1000);
+        $this->expectExceptionCode(Error::ERROR_REFERENCE_LOOP->getCode());
         $container->get('a-service');
     }
 
@@ -484,12 +473,15 @@ class ContainerTest extends TestCase
             ],
         ];
 
-        $container = new Container($config);
+        $container = new Container(new ServiceLibrary(new ArrayParser()), $config);
         $actualService = $container->get('x-service');
 
         $this->assertInstanceOf(Fixtures\ClassX::class, $actualService);
     }
 
+    /**
+     * Test container gets the service when two separated reference has the same parent.
+     */
     public function testContainerAllowsTheSameReferenceOnConfigInheritNodes(): void
     {
         $config = [
@@ -526,9 +518,95 @@ class ContainerTest extends TestCase
             ]
         ];
 
-        $container = new Container($config);
+        $container = new Container(new ServiceLibrary(new ArrayParser()), $config);
         $actualService = $container->get('o-service');
 
         $this->assertInstanceOf(Fixtures\ClassO::class, $actualService);
+    }
+
+    public function testContainerCannotCreateInstance(): void
+    {
+        $config = [
+            'a-service' => [
+                'class' => Fixtures\ClassA::class,
+                'arguments' => [
+                    // don't define required argument
+                ],
+            ],
+        ];
+
+        $container = new Container(new ServiceLibrary(new ArrayParser()), $config);
+
+        $this->expectExceptionCode(Error::ERROR_CLASS_NOT_INSTANTIABLE->getCode());
+        $container->get('a-service');
+    }
+
+    public function testContainerCreateInstanceWithRightParameterTypes(): void
+    {
+        $config = [
+            'DateService' => [
+                'class' => DateTime::class,
+                'arguments' => [
+                    'dateTimeString' => '1980-02-19 12:15:00'
+                ],
+            ],
+            'e-service' => [
+                'class' => Fixtures\ClassE::class,
+                'arguments' => [
+                    'DateService',
+                    'string scalar' => 'something',
+                    'negative int scalar' => -15,
+                    'int as string' => '15',
+                    'double scalar' => 23.45,
+                    'negative double as string' => '-23.45',
+                    'null' => null,
+                    'array' => ['data'],
+                    'boolean' => true
+                ],
+            ],
+        ];
+
+        $container = new Container(new ServiceLibrary(new ArrayParser()), $config);
+        /** @var Fixtures\ClassE $instance */
+        $instance = $container->get('e-service');
+
+        $parameters = $instance->getParams();
+        $this->assertSame('object', gettype($parameters[0]));
+        $this->assertSame(DateTime::class, $parameters[0]::class);
+        $this->assertSame('string', gettype($parameters[1]));
+        $this->assertSame('integer', gettype($parameters[2]));
+        $this->assertLessThan(0, $parameters[2]);
+        $this->assertSame('integer', gettype($parameters[3]));
+        $this->assertSame('double', gettype($parameters[4]));
+        $this->assertSame('double', gettype($parameters[5]));
+        $this->assertLessThan(0, $parameters[5]);
+        $this->assertSame('NULL', gettype($parameters[6]));
+        $this->assertSame('array', gettype($parameters[7]));
+        $this->assertSame('data', $parameters[7][0]);
+        $this->assertSame('boolean', gettype($parameters[8]));
+        $this->assertTrue($parameters[8]);
+    }
+
+    public function testContainerFailToCallMethod(): void
+    {
+        $dateTimeString = '1980-02-19 12:15:00';
+
+        $config = [
+            'DateService' => [
+                'class' => DateTime::class,
+                'arguments' => [
+                    'dateTimeString' => $dateTimeString
+                ],
+                'calls' => [
+                    ['setDate', ['param' => 'totally wrong parameter']],
+                ],
+                'shared' => true
+            ],
+        ];
+
+        $container = new Container(new ServiceLibrary(new ArrayParser()), $config);
+
+        $this->expectExceptionCode(Error::ERROR_METHOD_CANNOT_BE_CALLED->getCode());
+        $container->get('DateService');
     }
 }
