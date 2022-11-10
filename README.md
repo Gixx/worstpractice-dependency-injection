@@ -37,6 +37,12 @@ composer require gixx/worstpractice-dependency-injection
 To use it, you will need only a configuration as in the example:
 
 ```php
+namespace MyNamespace;
+
+use WorstPractice\Component\DependencyInjection\ConfigParser\ArrayParser;
+use WorstPractice\Component\DependencyInjection\ServiceLibrary;
+use WorstPractice\Component\DependencyInjection\Container;
+
 $config = [
     'ServiceAlias' => [
         'class' => \Namespace\To\MyClass::class,
@@ -82,9 +88,7 @@ $config = [
     ]
 ];
 
-$configParser = new \WorstPractice\Component\DependencyInjection\ConfigParser\ArrayParser();
-$serviceLibrary = new \WorstPractice\Component\DependencyInjection\ServiceLibrary($configParser);
-$container = new \WorstPractice\Component\DependencyInjection\Container($serviceLibrary, $config);
+$container = new Container(new ServiceLibrary(new ArrayParser()), $config);
 
 $authService = $_ENV['environment'] === 'dev'
     ? new \Namespace\To\DebugAuthService()
