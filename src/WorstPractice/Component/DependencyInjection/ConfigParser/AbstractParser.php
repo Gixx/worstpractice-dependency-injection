@@ -65,14 +65,14 @@ abstract class AbstractParser implements ConfigParserInterface
 
     public function stringifyValue(mixed $value): string
     {
-        return is_object($value) | is_array($value)
+        return is_object($value) || is_array($value)
             ? (string)json_encode($value)
             : strval($value);
     }
 
     public function getValueType(mixed $value): string
     {
-        return is_object($value) | is_array($value)
+        return is_object($value) || is_array($value)
             ? 'array' :
             gettype($value);
     }
