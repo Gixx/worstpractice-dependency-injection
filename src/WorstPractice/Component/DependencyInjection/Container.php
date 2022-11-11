@@ -122,7 +122,7 @@ class Container implements ContainerInterface
         if (class_exists($id)) {
             $reflectionClass = new ReflectionClass($id);
             $isInstantiable = $reflectionClass->isInstantiable()
-                && (int) ($reflectionClass->getConstructor()?->getNumberOfRequiredParameters()) === 0;
+                && ((int) $reflectionClass->getConstructor()?->getNumberOfRequiredParameters()) === 0;
         }
 
         return $isInstantiable;
