@@ -54,29 +54,6 @@ abstract class AbstractParser implements ConfigParserInterface
         return $argumentItemCollection;
     }
 
-    public function convertNumericStringToNumber(mixed $value): mixed
-    {
-        if (!is_string($value) || !is_numeric($value)) {
-            return $value;
-        }
-
-        return filter_var($value, FILTER_VALIDATE_INT) ?: filter_var($value, FILTER_VALIDATE_FLOAT);
-    }
-
-    public function stringifyValue(mixed $value): string
-    {
-        return is_object($value) || is_array($value)
-            ? (string)json_encode($value)
-            : strval($value);
-    }
-
-    public function getValueType(mixed $value): string
-    {
-        return is_object($value) || is_array($value)
-            ? 'array' :
-            gettype($value);
-    }
-
     /**
      * @param array<int, array{0: string, 1: null|array<int|string, mixed>}> $data
      * @return CallableItemCollection
@@ -96,5 +73,28 @@ abstract class AbstractParser implements ConfigParserInterface
         }
 
         return $callableItemCollection;
+    }
+
+    private function convertNumericStringToNumber(mixed $value): mixed
+    {
+        if (!is_string($value) || !is_numeric($value)) {
+            return $value;
+        }
+
+        return filter_var($value, FILTER_VALIDATE_INT) ?: filter_var($value, FILTER_VALIDATE_FLOAT);
+    }
+
+    private function stringifyValue(mixed $value): string
+    {
+        return is_object($value) || is_array($value)
+            ? (string)json_encode($value)
+            : strval($value);
+    }
+
+    private function getValueType(mixed $value): string
+    {
+        return is_object($value) || is_array($value)
+            ? 'array' :
+            gettype($value);
     }
 }
